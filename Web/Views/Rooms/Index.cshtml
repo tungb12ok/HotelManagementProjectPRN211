@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Services.Models.Room>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List Room</h1>
+
+<p>
+    <a asp-action="Create">Create Room</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BedType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoomStatus)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BedType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomStatus)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.RoomNumber">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.RoomNumber">Delete</a> |
+                    <a asp-controller="Occupancies" asp-action="Create" asp-route-id="@item.RoomNumber">Booking</a>
+                    @if (item.RoomStatus == RoomStatusEnum.Occupied.ToString())
+                    {   
+                        <a class="btn btn-secondary list-inline" asp-controller="Payments" asp-action="Create" asp-route-id="@item.RoomNumber">Pay</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

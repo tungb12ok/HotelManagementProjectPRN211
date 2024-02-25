@@ -1,0 +1,66 @@
+﻿@model Services.Models.Room
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Room</h4>
+@{
+    var MessError = ViewBag.MessError;
+
+}
+<h3 class="text-danger">@MessError</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RoomNumber" class="control-label"></label>
+                <input asp-for="RoomNumber" class="form-control" />
+                <span asp-validation-for="RoomNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomType" class="control-label"></label>
+                <select asp-for="RoomType" asp-items="@(new SelectList(Enum.GetValues(typeof(TypeRoomEnum))))" class="form-control">
+                    <option>Please select</option>
+                </select>
+                <span asp-validation-for="RoomType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BedType" class="control-label"></label>
+                <select asp-for="BedType" asp-items="@(new SelectList(Enum.GetValues(typeof(BedTypeEnum))))" class="form-control">
+                    <option>Please select</option>
+                </select>
+                <span asp-validation-for="BedType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rate" class="control-label"></label>
+                <input asp-for="Rate" class="form-control" />
+                <span asp-validation-for="Rate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomStatus" class="control-label"></label>
+                <select asp-for="RoomStatus" asp-items="@(new SelectList(Enum.GetValues(typeof(RoomStatusEnum))))" class="form-control">
+                    <option>Please select</option>
+                </select>
+                <span asp-validation-for="RoomStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
