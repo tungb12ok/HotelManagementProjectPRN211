@@ -3,25 +3,55 @@
 @{
     ViewData["Title"] = "Index";
 }
+<style>
+    /* Style cho các tiêu đề có thể sắp xếp */
+    th.sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+
+        th.sortable::after {
+            content: '\25B2'; /* Unicode character for upward arrow */
+            padding-left: 5px;
+            opacity: 0.6;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+        }
+
+    th.asc::after {
+        content: '\25B2'; /* Unicode character for upward arrow */
+        opacity: 1;
+    }
+
+    th.desc::after {
+        content: '\25BC'; /* Unicode character for downward arrow */
+        opacity: 1;
+    }
+</style>
 
 <h1>Payment</h1>
-
+<div class="mb-3">
+    <input type="text" id="searchInput" placeholder="Search ..." class="form-control">
+</div>
 <table class="table">
-    <thead>
+    <thead class="bg-success">
         <tr>
-            <th>
+            <th class="sortable" onclick="sortTable(0)">
                 @Html.DisplayNameFor(model => model.PaymentDate)
             </th>
-            <th>
+            <th class="sortable" onclick="sortTable(1)">
                 @Html.DisplayNameFor(model => model.AmountCharged)
             </th>
-            <th>
+            <th class="sortable" onclick="sortTable(2)">
                 @Html.DisplayNameFor(model => model.TaxRate)
-            </th>
-            <th>
+            </th >
+            <th class ="sortable" onclick="sortTable(3)">
                 @Html.DisplayNameFor(model => model.AccountNumberNavigation)
             </th>
-            <th>
+            <th class="sortable" onclick="sortTable(4)">
                 @Html.DisplayNameFor(model => model.EmployeeNumberNavigation)
             </th>
             <th></th>
@@ -50,3 +80,76 @@
         }
     </tbody>
 </table>
+<script>
+    // Filter functionality
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.querySelector(".table");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1]; // Change index to match the column you want to filter
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    });
+
+    // Sorting functionality
+    function sortTable(columnIndex) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.querySelector(".table");
+        switching = true;
+        dir = "asc"; // Set the default direction to ascending
+
+        while (switching) {
+            switching = false;
+            rows = table.getElementsByTagName("tr");
+
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[columnIndex];
+                y = rows[i + 1].getElementsByTagName("td")[columnIndex];
+
+                if (dir === "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir === "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+
+        // Add/remove classes to show sorting direction
+        var headers = document.querySelectorAll(".sortable");
+        headers.forEach(function (header) {
+            header.classList.remove("asc", "desc");
+        });
+        var clickedHeader = document.querySelector(".sortable:nth-child(" + (columnIndex + 1) + ")");
+        clickedHeader.classList.toggle("asc", dir === "asc");
+        clickedHeader.classList.toggle("desc", dir === "desc");
+    }
+</script>
